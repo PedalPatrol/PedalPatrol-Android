@@ -55,6 +55,68 @@ class FirebaseDatabase {
 	}
 
 
+
+ signUp(email,password,onSuccess, onError) {
+	    firebase.auth().createUserWithEmailAndPassword(email,password)
+	    .then(onSuccess).catch(onError);
+
+
+
+//	    ((user) => {
+//                  if (user) {
+//                      console.log("signup user id is: "+user.uid)
+//                      this.sendEmail(user.uid);
+//                      this.setAccount(user.uid);
+//                      this.signOut(user.uid);
+//                   }
+//                   }
+//                   )
+//                   .catch(onError);
+
+	 }
+
+    	checkVerify() {
+    	let user = firebase.auth().currentUser;
+    	let errorMessage='';
+    			if (user.emailVerified == false) {
+    			    console.log("user email verified"+user.emailVerified);
+    				errorMessage = 'email not verified';
+    				return errorMessage;
+    			} else {
+    			    return true;
+    				// successful login
+    			}
+    		}
+
+  sendEmail() {
+  //console.log("user in send email is : "+ user);
+    		 firebase.auth().currentUser.sendEmailVerification().then(function() {
+            // Email Verification sent!
+            // [START_EXCLUDE]
+            alert('Email Verification Sent!');
+            // [END_EXCLUDE]
+          }).catch(function(error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+    		var errorMessage = error.message;
+    		console.log('error for email:      '+ errorMessage);
+    		alert(errorMessage);
+    		});
+    	}
+
+  sendresetEmail() {
+    		let email = getCurrentUserEmail();
+    		firebase.auth().sendPasswordResetEmail(email).then(function() {
+    		// Email sent.
+    		}).catch(function(error) {
+    		// An error happened.
+    		var errorCode = error.code;
+    		var errorMessage = error.message;
+    		alert(errorMessage);
+    		});
+
+    	}
+
 	/**
 	 * Accesses Firebase data to sign in with email and password.
 	 * This function is called asynchronously. Use 'async' and 'await'.
@@ -93,9 +155,8 @@ class FirebaseDatabase {
 			console.log(error)
 			alert('Unable sign in with Twitter.')
 		});
-		this.getCurrentUser((userID) => {
-			this.setAccount(userID);
-		});
+		user = firebase.auth().currentUser;
+			this.setAccount(user.uid);
 		// console.log('did login')
 	}
 
@@ -116,9 +177,23 @@ class FirebaseDatabase {
 	}
 
 
-	setAccount(userId){
-		this.refDB.child('Users/').child(userId).set({id:userId,});
-	}
+	 setAccount(user){
+            //let user = firebase.auth().currentUser;
+            console.log("user in set account is: "+user);
+            this.refDB.child('Users/').child(user).set({
+            id:user,
+            circle_lat:"",
+            circle_long:"",
+            circle_r:"",
+            deviceToken:"",
+            full_name:'',
+            phoneNum:"",
+            email:user.email,
+            thumbnail:["https://firebasestorage.googleapis.com/v0/b/test-f4788.appspot.com/o/ProfileImages%2FKXx6FLsyOOVyCy1ik4bJK4Y17UV2%2F0.jpg?alt=media&token=526759aa-0a3d-4b0c-9cfe-33952fefc692"]
+
+
+            });
+        }
 
 	/**
 	 * Sign out of the database.
@@ -182,7 +257,7 @@ class FirebaseDatabase {
 	 * Overwrites data in the database by reading the data, merging it with the new values and writing back to the same ID.
 	 *
 	 * @param {Object} newProfileData - New data to write
-	 * @param {Function} onSuccess - A function callback to run when writing is successful
+	 * @param {Function}b onSuccess - A function callback to run when writing is successful
 	 * @param {Function} onErorr - A function callback to run when writing fails
 	 */
 	editProfileData(newProfileData, onSuccess, onError) {

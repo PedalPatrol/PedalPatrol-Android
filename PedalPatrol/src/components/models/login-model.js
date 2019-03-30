@@ -76,17 +76,18 @@ class LoginModel extends Model {
 			}, 600);
 		});
 
+		let verify = await Database.checkVerify();
+		if (verify === 'email not verified'){
+		    errorMessage = false;
+		    alert('email needs to be verified');
+		    await Database.signOut();
+		}
+
 		if (errorMessage) {				
 			this._authenticationSuccess();
 		}
 		this._notifyAll(errorMessage);
 
-		//var message = errorMessage;
-		// console.log('ddd:'+errorMessage)
-		// this.notifyAll(null) // Send with no message?
-		//console.log('errorbeforenotify: '+ errorMessage)
-		// this._notifyAll(errorMessage); // Consider not having a message and forcing the presenter to 'get' the message itself
-		// this._eventEmitter.emit('change')
 	}
 
 	/**

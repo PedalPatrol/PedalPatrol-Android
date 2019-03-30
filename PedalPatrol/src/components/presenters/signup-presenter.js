@@ -1,5 +1,5 @@
 import BasePresenter from './presenter';
-import { LoginM } from '../models/export-models';
+import { SignUpM } from '../models/export-models';
 
 /**
  * Class for the SignUp presenter and view
@@ -15,7 +15,7 @@ class SignUpPresenter extends BasePresenter {
 	constructor(view) {
 		super();
 		this.view = view;
-		LoginM.subscribe(this);
+		SignUpM.subscribe(this);
 	}
 		/**
 			 * Updates the bike model with new data.
@@ -23,7 +23,7 @@ class SignUpPresenter extends BasePresenter {
 			 * @param {Object} newData - New data to update the model's data with, including username and password for sign up.
 			 */
 	update = (newData) => {
-		LoginM.update(newData);
+		SignUpM.update(newData);
 	};
 
 	/**
@@ -35,8 +35,14 @@ class SignUpPresenter extends BasePresenter {
 	 */
 	onUpdated = (newData) => {
 		// Do something with the new data or let the view auto update?
-		console.log(newData)
-		this.view.refreshState();
+		if (newData){
+		    		    alert('please verify your email')
+                this.view.props.navigation.navigate('Login');
+		}
+		if(!newData){
+        alert('email exists')
+		}
+
 	};
 
 
@@ -46,7 +52,7 @@ class SignUpPresenter extends BasePresenter {
 	 * @return {Object} Data from the model.
 	 */
 	getData = () => {
-		return LoginM.get().data;
+		return SignUpM.get().data;
 	};
 
 	/**
@@ -70,7 +76,7 @@ class SignUpPresenter extends BasePresenter {
 	 * If the view or presenter is destroyed, unsubscribe the presenter from the model.
 	 */
 	onDestroy = () => {
-		LoginM.unsubscribe(this);
+		SignUpM.unsubscribe(this);
 	};
 };
 

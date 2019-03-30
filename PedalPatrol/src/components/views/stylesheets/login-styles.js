@@ -66,7 +66,7 @@ const login_styles = StyleSheet.create({
 		marginTop: 10,
 	},
 	socialMedia: {
-		marginTop: 300 // was 160 with Text
+		marginTop: 50 // was 160 with Text
 	},
 	loading: {
 		position: 'absolute',
